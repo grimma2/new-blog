@@ -30,7 +30,7 @@ SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-o3y1sl__u8@8=+gzu4ft^ju9ec
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DEBUG', 'True').lower() in ('true', '1', 'yes', 'on')
 
-ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
+# ALLOWED_HOSTS настраивается ниже вместе с CSRF_TRUSTED_ORIGINS
 
 
 # Application definition
@@ -181,11 +181,35 @@ CORS_ALLOWED_ORIGINS = os.getenv('CORS_ALLOWED_ORIGINS', 'http://localhost:3000'
 if DEBUG:
     CORS_ALLOW_ALL_ORIGINS = True
 
+# CSRF settings для работы через nginx proxy
+CSRF_TRUSTED_ORIGINS = [
+    'http://103.54.19.111',
+    'https://103.54.19.111',
+    'http://localhost:8000',
+    'http://127.0.0.1:8000',
+]
+
+# Разрешаем CSRF для всех доменов в ALLOWED_HOSTS
+ALLOWED_HOSTS_LIST = os.getenv('ALLOWED_HOSTS', 'localhost,127.0.0.1,103.54.19.111').split(',')
+ALLOWED_HOSTS = ALLOWED_HOSTS_LIST
+
+# Добавляем домены в CSRF_TRUSTED_ORIGINS
+for host in ALLOWED_HOSTS_LIST:
+    if host not in ['localhost', '127.0.0.1']:
+        CSRF_TRUSTED_ORIGINS.extend([
+            f'http://{host}',
+            f'https://{host}',
+        ])
+
+# Настройки для работы за proxy (nginx)
+USE_X_FORWARDED_HOST = True
+USE_X_FORWARDED_PORT = True
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
 # Security settings for production
 if not DEBUG:
     # HTTPS settings
     SECURE_SSL_REDIRECT = os.getenv('SECURE_SSL_REDIRECT', 'False').lower() in ('true', '1', 'yes', 'on')
-    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
     
     # Security headers
     SECURE_BROWSER_XSS_FILTER = True
