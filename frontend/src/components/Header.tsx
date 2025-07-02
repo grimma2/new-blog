@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, Suspense } from "react";
 import {
   AppBar,
   Toolbar,
@@ -15,7 +15,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { useMediaQuery, useTheme } from "@mui/material";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import TagTabs from "./TagTabs";
 import SearchBar from "./SearchBar";
 
@@ -24,13 +24,12 @@ interface Tag {
   name: string;
 }
 
-export default function Header() {
+function HeaderContent() {
   const [open, setOpen] = useState(false);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   const router = useRouter();
-  const pathname = usePathname();
   const params = useSearchParams();
   const currentTag = params.get("tag") ?? "all";
 
@@ -93,5 +92,21 @@ export default function Header() {
         </List>
       </Drawer>
     </>
+  );
+}
+
+export default function Header() {
+  return (
+    <Suspense fallback={
+      <AppBar position="sticky">
+        <Toolbar>
+          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+            Новости
+          </Typography>
+        </Toolbar>
+      </AppBar>
+    }>
+      <HeaderContent />
+    </Suspense>
   );
 } 

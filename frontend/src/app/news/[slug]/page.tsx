@@ -7,18 +7,9 @@ interface Tag {
   id: string;
   name: string;
 }
-interface NewsResponse {
-  id: string;
-  slug: string;
-  title: string;
-  cover_image: string | null;
-  content: string;
-  published_at: string;
-  tags: Tag[];
-}
 
-export async function generateMetadata({ params }: { params: { slug: string } | Promise<{ slug: string }> }): Promise<Metadata> {
-  const { slug } = (await params) as { slug: string };
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+  const { slug } = await params;
   const base = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
   const res = await fetch(`${base}/api/news/?slug=${slug}`);
   const response = await res.json();
@@ -30,8 +21,8 @@ export async function generateMetadata({ params }: { params: { slug: string } | 
   };
 }
 
-export default async function NewsDetail({ params }: { params: { slug: string } | Promise<{ slug: string }> }) {
-  const { slug } = (await params) as { slug: string };
+export default async function NewsDetail({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
   const base = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
   const res = await fetch(`${base}/api/news/?slug=${slug}`, { cache: "no-store" });
   const response = await res.json();
@@ -42,9 +33,11 @@ export default async function NewsDetail({ params }: { params: { slug: string } 
   return (
     <Container maxWidth="md" sx={{ pt: 4 }}>
       {news.cover_image && (
-        <img
+        <Image
           src={news.cover_image.startsWith("http") ? news.cover_image : `${base}${news.cover_image}`}
           alt={news.title}
+          width={800}
+          height={400}
           style={{ maxWidth: "100%", height: "auto" }}
         />
       )}

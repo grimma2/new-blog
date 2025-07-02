@@ -3,7 +3,7 @@
 import { Tabs, Tab } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { SyntheticEvent } from "react";
 import { useMediaQuery, useTheme } from "@mui/material";
 
@@ -19,7 +19,6 @@ export default function TagTabs() {
   const router = useRouter();
   const params = useSearchParams();
   const tag = params.get("tag") ?? "all";
-  const pathname = usePathname();
 
   const { data } = useQuery<Tag[]>({
     queryKey: ["tags"],

@@ -9,7 +9,6 @@ import {
   CardMedia,
   CardActionArea,
   Chip,
-  Stack,
 } from "@mui/material";
 import { useRouter } from "next/navigation";
 

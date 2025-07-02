@@ -1,13 +1,13 @@
 "use client";
 
-import React from "react";
-import { Grid, Pagination, Box } from "@mui/material";
+import React, { Suspense } from "react";
+import { Grid, Pagination, Box, CircularProgress } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import NewsCard, { NewsItem } from "./NewsCard";
 import { useSearchParams, useRouter } from "next/navigation";
 
-export default function NewsList() {
+function NewsListContent() {
   const params = useSearchParams();
   const tagId = params.get("tag");
   const searchQuery = params.get("search");
@@ -66,5 +66,17 @@ export default function NewsList() {
         </Box>
       )}
     </Box>
+  );
+}
+
+export default function NewsList() {
+  return (
+    <Suspense fallback={
+      <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
+        <CircularProgress />
+      </Box>
+    }>
+      <NewsListContent />
+    </Suspense>
   );
 } 
