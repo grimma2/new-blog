@@ -1,0 +1,22 @@
+version: "3.9"
+
+services:
+
+  web:
+    build:
+      context: ./newsblog
+    command: gunicorn newsblog.wsgi:application --bind 0.0.0.0:8000
+    volumes:
+      - ./newsblog:/app
+      # Медиа файлы мапим на хост для nginx
+      - ./media:/app/media
+      # Статические файлы - named volume для сборки
+      - staticfiles:/app/staticfiles
+      - ./static:/app/static
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+
+volumes:
+  staticfiles: 
