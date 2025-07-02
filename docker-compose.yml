@@ -9,10 +9,9 @@ services:
     volumes:
       - ./newsblog:/app
       # Медиа файлы мапим на хост для nginx
-      - ./media:/app/media
-      # Статические файлы - named volume для сборки
-      - staticfiles:/app/staticfiles
-      - ./static:/app/static
+      - ./newsblog/media:/app/media
+      # Статические файлы мапим на хост для nginx
+      - ./newsblog/staticfiles:/app/staticfiles
     ports:
       - "8000:8000"
     env_file:
@@ -32,5 +31,3 @@ services:
     depends_on:
       - web
 
-volumes:
-  staticfiles: 
