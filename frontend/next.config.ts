@@ -1,10 +1,16 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  output: 'export',  // Статический экспорт
-  trailingSlash: true,
+  // Убираем output: 'export' для серверного режима
   images: {
-    unoptimized: true  // Отключаем оптимизацию изображений для статики
+    remotePatterns: [
+      {
+        protocol: 'http',
+        hostname: 'localhost',
+        port: '8000',
+        pathname: '/media/**',
+      },
+    ],
   }
 };
 
