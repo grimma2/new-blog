@@ -225,3 +225,6 @@ if not DEBUG:
     SECURE_HSTS_SECONDS = 31536000  # 1 year
     SECURE_HSTS_INCLUDE_SUBDOMAINS = True
     SECURE_HSTS_PRELOAD = True
+
+# Системный токен для импорта новостей
+SYSTEM_IMPORT_TOKEN = os.getenv('SYSTEM_IMPORT_TOKEN', 'your-secret-system-token-here')

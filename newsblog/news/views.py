@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from rest_framework import viewsets, status
 from rest_framework.decorators import action, api_view, permission_classes
-from rest_framework.permissions import AllowAny, IsAdminUser
+from rest_framework.permissions import AllowAny, IsAdminUser, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.parsers import MultiPartParser, FormParser, JSONParser
@@ -11,6 +11,7 @@ import json
 
 from .models import News, Tag
 from .serializers import NewsSerializer, TagSerializer
+from .permissions import HasSystemToken
 
 # Create your views here.
 
@@ -46,7 +47,7 @@ class NewsViewSet(viewsets.ModelViewSet):
         return qs
 
 class NewsImportView(APIView):
-    permission_classes = [IsAdminUser]
+    permission_classes = [HasSystemToken]  # Только проверка токена, без аутентификации
     parser_classes = [MultiPartParser, FormParser, JSONParser]  # Поддержка файлов и JSON
 
     def post(self, request, *args, **kwargs):
@@ -57,6 +58,8 @@ class NewsImportView(APIView):
             print(f"🔍 Данные: {data}")  # Для отладки
             print(f"🔍 Content-Type: {request.content_type}")  # Для отладки
             print(f"🔍 Method: {request.method}")  # Для отладки
+            print(f"🔍 User: {request.user}")  # Для отладки
+            print(f"🔍 Authenticated: {request.user.is_authenticated}")  # Для отладки
             
             serializer = NewsSerializer(data=data, context={'request': request})
             if serializer.is_valid():
@@ -70,7 +73,12 @@ class NewsImportView(APIView):
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     
     def get(self, request, *args, **kwargs):
-        return Response({"message": "Use POST method to import news"}, status=status.HTTP_200_OK)
+        return Response({
+            "message": "Use POST method to import news",
+            "user": str(request.user),
+            "authenticated": request.user.is_authenticated,
+            "has_system_token": True  # Если дошли сюда, значит токен валидный
+        }, status=status.HTTP_200_OK)
 
 
 class HomePageViewSet(viewsets.ViewSet):
