@@ -87,7 +87,7 @@ WSGI_APPLICATION = 'newsblog.wsgi.application'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
 # Use PostgreSQL if environment variables are set, otherwise fallback to SQLite
-if os.getenv('DB_ENGINE') == 'django.db.backends.postgresql':
+if not DEBUG:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql',

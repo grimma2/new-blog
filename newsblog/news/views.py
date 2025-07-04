@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from rest_framework import viewsets, status
 from rest_framework.decorators import action, api_view, permission_classes
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAdminUser
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.parsers import MultiPartParser, FormParser, JSONParser
@@ -46,8 +46,7 @@ class NewsViewSet(viewsets.ModelViewSet):
         return qs
 
 class NewsImportView(APIView):
-    permission_classes = [AllowAny]
-    authentication_classes = []  # disable auth
+    permission_classes = [IsAdminUser]
     parser_classes = [MultiPartParser, FormParser, JSONParser]  # Поддержка файлов и JSON
 
     def post(self, request, *args, **kwargs):
