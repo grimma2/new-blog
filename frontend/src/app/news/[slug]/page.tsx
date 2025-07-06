@@ -2,6 +2,7 @@ import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Container, Typography, Stack, Chip } from "@mui/material";
 import Image from "next/image";
+import { buildMediaUrl, isVideo } from "@/lib/media";
 
 interface Tag {
   id: string;
@@ -30,16 +31,27 @@ export default async function NewsDetail({ params }: { params: Promise<{ slug: s
   const news = data[0];
   if (!news) notFound();
 
+  const mediaUrl = buildMediaUrl(news.cover_image);
+  const isVideoMedia = isVideo(mediaUrl);
+
   return (
     <Container maxWidth="md" sx={{ pt: 4 }}>
-      {news.cover_image && (
-        <Image
-          src={news.cover_image.startsWith("http") ? news.cover_image : `${base}${news.cover_image}`}
-          alt={news.title}
-          width={800}
-          height={400}
-          style={{ maxWidth: "100%", height: "auto" }}
-        />
+      {mediaUrl && (
+        isVideoMedia ? (
+          <video
+            src={mediaUrl}
+            controls
+            style={{ width: "100%", maxHeight: 400 }}
+          />
+        ) : (
+          <Image
+            src={mediaUrl}
+            alt={news.title}
+            width={800}
+            height={400}
+            style={{ maxWidth: "100%", height: "auto" }}
+          />
+        )
       )}
       <Typography variant="h4" component="h1" gutterBottom sx={{ mt: 2 }}>
         {news.title}

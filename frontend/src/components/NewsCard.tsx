@@ -11,6 +11,7 @@ import {
   Box,
 } from "@mui/material";
 import { useRouter } from "next/navigation";
+import { buildMediaUrl, isVideo } from "@/lib/media";
 
 interface Tag {
   id: string;
@@ -29,12 +30,8 @@ export interface NewsItem {
 
 export default function NewsCard({ news }: { news: NewsItem }) {
   const router = useRouter();
-  const base = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
-  const imageUrl = news.cover_image
-    ? news.cover_image.startsWith("http")
-      ? news.cover_image
-      : `${base}${news.cover_image}`
-    : null;
+  const mediaUrl = buildMediaUrl(news.cover_image);
+  const isVideoMedia = isVideo(mediaUrl);
 
   return (
     <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
@@ -42,14 +39,24 @@ export default function NewsCard({ news }: { news: NewsItem }) {
         onClick={() => router.push(`/news/${news.slug}`)}
         sx={{ height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'stretch' }}
       >
-        {imageUrl && (
-          <CardMedia
-            component="img"
-            height="180"
-            image={imageUrl}
-            alt={news.title}
-            sx={{ flexShrink: 0 }}
-          />
+        {mediaUrl && (
+          isVideoMedia ? (
+            <CardMedia
+              component="video"
+              controls
+              height="180"
+              src={mediaUrl}
+              sx={{ flexShrink: 0 }}
+            />
+          ) : (
+            <CardMedia
+              component="img"
+              height="180"
+              image={mediaUrl}
+              alt={news.title}
+              sx={{ flexShrink: 0 }}
+            />
+          )
         )}
         <CardContent sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
           <Typography gutterBottom variant="h6" component="div">

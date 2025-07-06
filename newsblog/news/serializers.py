@@ -32,6 +32,9 @@ class NewsSerializer(serializers.ModelSerializer):
             "tag_slugs",
         ]
         read_only_fields = ["slug"]
+        extra_kwargs = {
+            "cover_image": {"required": False, "allow_null": True}
+        }
 
     def create(self, validated_data):
         # Обрабатываем все поля связанные с тегами отдельно

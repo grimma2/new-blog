@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import { buildMediaUrl, isVideo } from "@/lib/media";
 import {
   Box,
   Typography,
@@ -39,12 +40,8 @@ interface CategoryNewsBlockProps {
 
 function SmallNewsCard({ news }: { news: NewsItem }) {
   const router = useRouter();
-  const base = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
-  const imageUrl = news.cover_image
-    ? news.cover_image.startsWith("http")
-      ? news.cover_image
-      : `${base}${news.cover_image}`
-    : null;
+  const mediaUrl = buildMediaUrl(news.cover_image);
+  const isVideoMedia = isVideo(mediaUrl);
 
   return (
     <Card sx={{ mb: 1, display: 'flex', flexDirection: 'column' }}>
@@ -52,13 +49,22 @@ function SmallNewsCard({ news }: { news: NewsItem }) {
         onClick={() => router.push(`/news/${news.slug}`)}
         sx={{ display: 'flex', flexDirection: 'column', alignItems: 'stretch' }}
       >
-        {imageUrl && (
-          <CardMedia
-            component="img"
-            sx={{ width: '100%', aspectRatio: '1/1', objectFit: 'cover' }}
-            image={imageUrl}
-            alt={news.title}
-          />
+        {mediaUrl && (
+          isVideoMedia ? (
+            <CardMedia
+              component="video"
+              controls
+              sx={{ width: '100%', aspectRatio: '1/1', objectFit: 'cover' }}
+              src={mediaUrl}
+            />
+          ) : (
+            <CardMedia
+              component="img"
+              sx={{ width: '100%', aspectRatio: '1/1', objectFit: 'cover' }}
+              image={mediaUrl}
+              alt={news.title}
+            />
+          )
         )}
         <CardContent sx={{ 
           flex: 1, 

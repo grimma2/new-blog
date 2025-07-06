@@ -48,7 +48,7 @@ class News(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
     title = models.CharField(max_length=200)
     slug = models.CharField(unique=True, max_length=200, blank=True, validators=[unicode_slug_validator])
-    cover_image = models.ImageField(upload_to=news_cover_path)
+    cover_image = models.FileField(upload_to=news_cover_path, blank=True, null=True)
     description = models.TextField()
     content = models.TextField()
     published_at = models.DateTimeField(db_index=True)
