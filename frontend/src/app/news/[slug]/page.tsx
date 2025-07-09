@@ -11,7 +11,8 @@ interface Tag {
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
-  const base = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+  console.log(process.env.NEXT_PUBLIC_API_URL);
+  const base = process.env.NEXT_PUBLIC_API_URL || "https://linfo.tg";
   const res = await fetch(`${base}/api/news/?slug=${slug}`);
   const response = await res.json();
   const data = response.results || response;
@@ -24,7 +25,8 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
 export default async function NewsDetail({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const base = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+  console.log(process.env.NEXT_PUBLIC_API_URL);
+  const base = process.env.NEXT_PUBLIC_API_URL || "https://linfo.tg";
   const res = await fetch(`${base}/api/news/?slug=${slug}`, { cache: "no-store" });
   const response = await res.json();
   const data = response.results || response;
