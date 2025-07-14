@@ -8,6 +8,7 @@ class TagSerializer(serializers.ModelSerializer):
         fields = ["id", "name", "slug"]
 
 class NewsSerializer(serializers.ModelSerializer):
+    cover_image = serializers.FileField(required=False, allow_null=True)
     tags = TagSerializer(many=True, read_only=True)
     tag_ids = serializers.PrimaryKeyRelatedField(
         queryset=Tag.objects.all(), many=True, write_only=True, source="tags", required=False

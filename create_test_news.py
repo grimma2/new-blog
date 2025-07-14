@@ -9,7 +9,7 @@ from datetime import datetime, timedelta
 BASE_URL = "http://localhost:8000/api"
 
 # Путь к тестовому изображению
-TEST_IMAGE_PATH = "test_image.jpg"
+TEST_IMAGE_PATH = "test_video.mp4"
 
 def create_test_image():
     """Создает простое тестовое изображение если его нет"""
@@ -98,7 +98,7 @@ def create_test_news():
         try:
             # Подготавливаем данные для multipart/form-data
             files = {
-                'cover_image': ('test_image.jpg', open(TEST_IMAGE_PATH, 'rb'), 'image/jpeg')
+                'cover_image': ('test_video.mp4', open(TEST_IMAGE_PATH, 'rb'), 'video/mp4')
             }
             
             # Генерируем дату публикации (последние 30 дней)
@@ -117,8 +117,10 @@ def create_test_news():
             
             response = requests.post(
                 f"{BASE_URL}/news/import/",
+                data=data,
                 files=files,
-                data=data
+                headers={'Authorization': 'Token JIhgVGYrDu65^U7y87t6r&D^5$3Tr'},
+                verify=False
             )
             
             files['cover_image'][1].close()  # Закрываем файл
@@ -145,7 +147,7 @@ def check_created_news():
     print("\n📋 Проверяем созданные новости...")
     
     try:
-        response = requests.get(f"{BASE_URL}/news/")
+        response = requests.get(f"{BASE_URL}/news/", verify=False)
         
         if response.status_code == 200:
             result = response.json()

@@ -1,0 +1,3 @@
+# Production environment variables for frontend
+# Скопируйте в frontend/.env.local на сервере
+NEXT_PUBLIC_API_URL=https://linfo.tg/api 
