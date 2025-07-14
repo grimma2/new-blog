@@ -52,8 +52,9 @@ class NewsImportView(APIView):
 
     def post(self, request, *args, **kwargs):
         try:
-            # Создаем копию данных для обработки
-            data = request.data.copy()
+            # Используем исходные данные запроса без deepcopy,
+            # чтобы избежать ошибок pickling при наличии файлов
+            data = request.data
             
             print(f"🔍 Данные: {data}")  # Для отладки
             print(f"🔍 Content-Type: {request.content_type}")  # Для отладки
